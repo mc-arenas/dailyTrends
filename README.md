@@ -43,18 +43,10 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
-Hace falta añadir las variables de entorno DATABASE_PASSWORD y JWT_SECRET, se puede añadir creando un fichero .env en el directorio principal
-
-## Running the app with docker
-```bash
-# docker build
-$ docker build -t dailyTrends .
-
-# docker run
-$ docker run -e JWT_SECRET=secret -e DATABASE_PASSWORD=password -p 3000:3000 dailyTrends
+Hace falta añadir las variables de entorno JWT_SECRET y JWT_TOKEN_EXPIRATION, se puede añadir creando un fichero .env en el directorio principal
 
 
-# TODO
+# Deploy mongo DB
 
 $ docker run -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=root mongo:latest
 ```
