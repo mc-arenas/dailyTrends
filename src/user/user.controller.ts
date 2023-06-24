@@ -11,6 +11,8 @@ import {
 import { UserService } from './user.service';
 import { ClientAuthGuard } from 'src/auth/guards/client-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { roles } from 'src/common/types';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('user')
 export class UserController {
@@ -23,6 +25,7 @@ export class UserController {
   }
 
   @UseGuards(ClientAuthGuard)
+  @Roles(roles.client)
   @Get('me')
   async findMe(@Request() req) {
     return await this.userService.findOne(req.user.userId);

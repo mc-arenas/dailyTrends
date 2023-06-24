@@ -1,6 +1,6 @@
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/user.schema';
-import { Model } from 'mongoose';
+import { Model, UpdateWriteOpResult } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
@@ -8,10 +8,8 @@ import { InjectModel } from '@nestjs/mongoose';
 export class UserService {
   constructor(@InjectModel(User.name) private UserModel: Model<User>) {}
 
-  // TODO update by userId
-  async update(userId: number, updateUserDto: UpdateUserDto): Promise<User> {
-    const updatedUser = new this.UserModel(updateUserDto);
-    return updatedUser.save();
+  async update(userId: string, updateUserDto: UpdateUserDto): Promise<UpdateWriteOpResult> {
+    return this.UserModel.updateOne({_id: userId}, updateUserDto).exec();
   }
 
   async findOne(id: string): Promise<User> {

@@ -13,7 +13,7 @@ import { User, UserSchema } from 'src/user/schemas/user.schema';
     ConfigModule.forRoot(),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '10h' },
+      signOptions: { expiresIn: process.env.JWT_TOKEN_EXPIRATION },
     }),
   ],
   controllers: [AuthController],

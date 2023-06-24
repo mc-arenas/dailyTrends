@@ -12,31 +12,28 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { NoAuthGuard } from './guards/no-auth.guard';
+import { Logger } from '../Logger';
 
 @Controller('auth')
 export class AuthController {
+  private logger: Logger;
+
   constructor(
     private readonly authService: AuthService,
-    private jwtService: JwtService,
-  ) {}
+    private jwtService: JwtService
+  ) {
+    this.logger = new Logger();
+  }
+
 
   @Post('login')
   @UseGuards(NoAuthGuard)
   async login(@Body() loginAuthDto: LoginAuthDto) {
     try {
-      if (
-        loginAuthDto.email == undefined ||
-        loginAuthDto.email.trim() == '' ||
-        loginAuthDto.password == undefined ||
-        loginAuthDto.password.trim() == '' ||
-        loginAuthDto.password.length <= 7
-      ) {
-        throw { message: 'Invalid data', statusCode: HttpStatus.BAD_REQUEST };
-      }
 
-      // check email
+      // get user and check email
       const user = await this.authService.findUserByEmail(loginAuthDto.email);
-      if (user == null) {
+      if (user === null) {
         throw { message: 'Not found user', statusCode: HttpStatus.NOT_FOUND };
       }
 
@@ -51,6 +48,7 @@ export class AuthController {
         };
       }
 
+      this.logger.add(`Logging user ... ${user.email} at ${new Date()}`);
       return {
         access_token: this.jwtService.sign({
           //@ts-ignore
@@ -59,10 +57,12 @@ export class AuthController {
         }),
       };
     } catch (error) {
-      throw new HttpException(
+      const throwError = new HttpException(
         error.message || 'Internal server error',
         error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
       );
+      this.logger.add(`ERROR logging user ... ${throwError.message} at ${new Date()}`);
+      throw throwError;
     }
   }
 
@@ -70,20 +70,6 @@ export class AuthController {
   @UseGuards(NoAuthGuard)
   async register(@Body() registerAuthDto: RegisterAuthDto) {
     try {
-      if (
-        registerAuthDto.email == undefined ||
-        registerAuthDto.email.trim() == '' ||
-        registerAuthDto.password == undefined ||
-        registerAuthDto.password.trim() == '' ||
-        registerAuthDto.password.length <= 7 ||
-        registerAuthDto.role == undefined ||
-        registerAuthDto.role.trim() == '' ||
-        registerAuthDto.name == undefined ||
-        registerAuthDto.name.trim() == ''
-      ) {
-        throw { message: 'Invalid data', statusCode: HttpStatus.BAD_REQUEST };
-      }
-
       // check email
       let user = await this.authService.findUserByEmail(registerAuthDto.email);
       if (user != null) {
@@ -98,9 +84,9 @@ export class AuthController {
         registerAuthDto.password,
         10,
       );
+
+      this.logger.add(`Registering ${registerAuthDto.role} user ... ${registerAuthDto.email} at ${new Date()}`);
       user = await this.authService.registerUser(registerAuthDto);
-      //@ts-ignore
-      console.log('DD');
 
       const access_token = this.jwtService.sign({
         //@ts-ignore
@@ -112,10 +98,12 @@ export class AuthController {
         access_token
       };
     } catch (error) {
-      throw new HttpException(
+      const throwError = new HttpException(
         error.message || 'Internal server error',
         error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
       );
+      this.logger.add(`ERROR registering user ... ${throwError.message} at ${new Date()}`);
+      throw throwError;
     }
   }
 }
