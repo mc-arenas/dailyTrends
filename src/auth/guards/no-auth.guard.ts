@@ -3,11 +3,10 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class NoAuthGuard implements CanActivate {
-    canActivate(
-      context: ExecutionContext,
-    ): boolean | Promise<boolean> | Observable<boolean> {
-        const request = context.switchToHttp().getRequest();
-        return !request.headers.authorization;
-    }
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    const request = context.switchToHttp().getRequest();
+    return !request.headers.authorization;
   }
-  
+}

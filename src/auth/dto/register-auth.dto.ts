@@ -1,5 +1,11 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { roles } from 'src/common/types';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  MinLength,
+} from 'class-validator';
+import { roles } from '../../common/types';
 
 export class RegisterAuthDto {
   @IsString()

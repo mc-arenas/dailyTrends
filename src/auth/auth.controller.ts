@@ -20,17 +20,15 @@ export class AuthController {
 
   constructor(
     private readonly authService: AuthService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {
     this.logger = new Logger();
   }
-
 
   @Post('login')
   @UseGuards(NoAuthGuard)
   async login(@Body() loginAuthDto: LoginAuthDto) {
     try {
-
       // get user and check email
       const user = await this.authService.findUserByEmail(loginAuthDto.email);
       if (user === null) {
@@ -61,7 +59,9 @@ export class AuthController {
         error.message || 'Internal server error',
         error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
       );
-      this.logger.add(`ERROR logging user ... ${throwError.message} at ${new Date()}`);
+      this.logger.add(
+        `ERROR logging user ... ${throwError.message} at ${new Date()}`,
+      );
       throw throwError;
     }
   }
@@ -85,7 +85,11 @@ export class AuthController {
         10,
       );
 
-      this.logger.add(`Registering ${registerAuthDto.role} user ... ${registerAuthDto.email} at ${new Date()}`);
+      this.logger.add(
+        `Registering ${registerAuthDto.role} user ... ${
+          registerAuthDto.email
+        } at ${new Date()}`,
+      );
       user = await this.authService.registerUser(registerAuthDto);
 
       const access_token = this.jwtService.sign({
@@ -95,14 +99,16 @@ export class AuthController {
       });
 
       return {
-        access_token
+        access_token,
       };
     } catch (error) {
       const throwError = new HttpException(
         error.message || 'Internal server error',
         error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR,
       );
-      this.logger.add(`ERROR registering user ... ${throwError.message} at ${new Date()}`);
+      this.logger.add(
+        `ERROR registering user ... ${throwError.message} at ${new Date()}`,
+      );
       throw throwError;
     }
   }

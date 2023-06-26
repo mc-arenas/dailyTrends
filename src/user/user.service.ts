@@ -8,8 +8,11 @@ import { InjectModel } from '@nestjs/mongoose';
 export class UserService {
   constructor(@InjectModel(User.name) private UserModel: Model<User>) {}
 
-  async update(userId: string, updateUserDto: UpdateUserDto): Promise<UpdateWriteOpResult> {
-    return this.UserModel.updateOne({_id: userId}, updateUserDto).exec();
+  async update(
+    userId: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UpdateWriteOpResult> {
+    return this.UserModel.updateOne({ _id: userId }, updateUserDto).exec();
   }
 
   async findOne(id: string): Promise<User> {

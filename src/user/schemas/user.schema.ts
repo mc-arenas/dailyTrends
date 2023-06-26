@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { roles } from 'src/common/types';
+import { roles } from '../../common/types';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -18,7 +18,7 @@ export class User {
   @Prop({ unique: true })
   email: string;
 
-  @Prop({ default: true})
+  @Prop({ default: true })
   active: boolean;
 }
 

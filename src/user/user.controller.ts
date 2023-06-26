@@ -9,10 +9,10 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ClientAuthGuard } from 'src/auth/guards/client-auth.guard';
+import { ClientAuthGuard } from '../auth/guards/client-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { roles } from 'src/common/types';
-import { Roles } from 'src/common/decorators/roles.decorator';
+import { roles } from '../common/types';
+import { Roles } from '../common/decorators/roles.decorator';
 
 @Controller('user')
 export class UserController {
@@ -40,10 +40,6 @@ export class UserController {
   @UseGuards(ClientAuthGuard)
   @Put()
   async update(@Request() req, @Body() updateUserDto: UpdateUserDto) {
-    if (updateUserDto.name == undefined || updateUserDto.name.trim() == '') {
-      throw { message: 'Invalid data', statusCode: HttpStatus.BAD_REQUEST };
-    }
-
     return await this.userService.update(req.user.userId, updateUserDto);
   }
 }

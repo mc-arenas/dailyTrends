@@ -15,7 +15,7 @@ export class Feed {
   context: string;
 
   @Prop({ unique: true })
-  newId: string;
+  originalUrl: string;
 
   @Prop()
   newspaper: string;

@@ -1,7 +1,6 @@
 import { IsNotEmpty, IsString, MinLength } from 'class-validator';
 
 export class CreateFeedDto {
-
   @IsString()
   title: string;
 
@@ -12,7 +11,7 @@ export class CreateFeedDto {
   context: string;
 
   @IsNotEmpty()
-  newId: string;
+  originalUrl: string;
 
   @IsString()
   newspaper: string;

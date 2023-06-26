@@ -1,12 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpStatus, HttpException, HttpCode, Put } from '@nestjs/common';
-import { ClientAuthGuard } from 'src/auth/guards/client-auth.guard';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  UseGuards,
+  HttpStatus,
+  HttpException,
+  HttpCode,
+  Put,
+} from '@nestjs/common';
 import { FeedService } from './feed.service';
 import { CreateFeedDto } from './dto/create-feed.dto';
 import { UpdateFeedDto } from './dto/update-feed.dto';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/common/decorators/roles.decorator';
-import { roles } from 'src/common/types';
-import { NoAuthGuard } from 'src/auth/guards/no-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
+import { roles } from '../common/types';
+import { NoAuthGuard } from '../auth/guards/no-auth.guard';
+import { ClientAuthGuard } from '../auth/guards/client-auth.guard';
 
 @Controller('feed')
 export class FeedController {
@@ -14,13 +26,15 @@ export class FeedController {
 
   @Post()
   @UseGuards(ClientAuthGuard, RolesGuard)
-  @Roles(roles.client)
+  @Roles(roles.admin)
   async create(@Body() createFeedDto: CreateFeedDto) {
     // check if there is another feed related to the same new
-    const auxNew = await this.feedService.findOneByNewId(createFeedDto.newId);
+    const auxNew = await this.feedService.findOneByOriginalUrl(
+      createFeedDto.originalUrl,
+    );
     if (auxNew !== null) {
       throw new HttpException(
-        `Bad Request, the new id ${createFeedDto.newId} already exists`,
+        `Bad Request, the new id ${createFeedDto.originalUrl} already exists`,
         HttpStatus.BAD_REQUEST,
       );
     }
@@ -29,13 +43,11 @@ export class FeedController {
   }
 
   @Get()
-  @UseGuards(NoAuthGuard)
   findAll() {
     return this.feedService.findAll();
   }
 
   @Get(':id')
-  @UseGuards(NoAuthGuard)
   async findOne(@Param('id') feedId: string) {
     return await this.feedService.findOne(feedId);
   }

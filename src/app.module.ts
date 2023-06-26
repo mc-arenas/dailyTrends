@@ -13,7 +13,7 @@ import { FeedModule } from './feed/feed.module';
     ConfigModule.forRoot(),
     UserModule,
     AuthModule,
-    FeedModule
+    FeedModule,
   ],
   controllers: [AppController],
   providers: [AppService],
